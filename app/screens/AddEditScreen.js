@@ -81,8 +81,6 @@ function AddEditScreen({ route }) {
     var newImageLocation = moveImageToDocumentDir(name);
     var newSoundLocation = moveSoundToDocumentDir(name);
 
-    console.log("idemo");
-
     Promise.all([newImageLocation, newSoundLocation])
       .then((val) => updateItem(route.params.item.id, name, val[0], val[1]))
       .then(navigate())
@@ -104,8 +102,6 @@ function AddEditScreen({ route }) {
 
     var newImageLocation = moveImageToDocumentDir(name);
     var newSoundLocation = moveSoundToDocumentDir(name);
-
-    console.log("idemo");
 
     Promise.all([newImageLocation, newSoundLocation])
       .then((val) => insertToDB(name, val[0], val[1]))
@@ -178,17 +174,17 @@ function AddEditScreen({ route }) {
     return new Promise((resolve, reject) => {
       db.transaction((tx) => {
         tx.executeSql(
-          "insert into items (name_en, name_mk, image, sound_en, category, is_category) values (?, ?, ?, ?, ?, ?)",
+          "insert into items (name_en, name_mk, image, sound_en, sound_mk, category, is_category) values (?, ?, ?, ?, ?, ?, ?)",
           [
             name,
             name,
             newImageLocation,
             newSoundLocation,
+            newSoundLocation,
             selectedValue,
             route.params.isCategory,
           ],
           (_, results) => {
-            console.log("Results", results.rowsAffected);
             resolve();
           },
           (_, err) => {
@@ -225,7 +221,6 @@ function AddEditScreen({ route }) {
 
     db.transaction((tx) => {
       tx.executeSql("select * from items", [], (_, { rows }) => {
-        console.log(JSON.stringify(rows));
         arr = rows;
       });
     });
